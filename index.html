@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Калькулятор наценки (Нигерия)</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;text-align:center}
+    h1{font-size:22px;margin-bottom:8px}
+    p{margin:4px 0 16px}
+    .row{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+    input,button{font-size:18px;padding:10px 14px;border:1px solid #d0d5dd;border-radius:12px}
+    input{width:220px;text-align:center}
+    button{cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+    .result{margin-top:18px;font-size:22px;font-weight:700;color:#146c2e;min-height:28px}
+    .hint{font-size:12px;color:#6b7280;margin-top:6px}
+  </style>
+</head>
+<body>
+  <h1>Калькулятор наценки (Нигерия)</h1>
+  <p>Введи цену в рублях (можно с запятой или точкой):</p>
+  <div class="row">
+    <input id="price" type="text" inputmode="decimal" autocomplete="off" placeholder="например, 359,68" />
+    <button id="calcBtn">Посчитать</button>
+  </div>
+  <div class="result" id="result"></div>
+  <div class="hint">Формулы полностью совпадают с твоим финальным скриптом Pythonista.</div>
+
+  <script>
+    // Округление вверх до 10 ₽
+    function ceil10(x){ return Math.ceil(x/10)*10; }
+
+    // Парсинг числа с поддержкой запятой
+    function parseRub(v){
+      if(typeof v !== 'string') return NaN;
+      const s = v.replace(/\s+/g,'').replace(',', '.');
+      return parseFloat(s);
+    }
+
+    // Точный перенос calculate_price из Pythonista
+    function calculatePrice(baseRub){
+      let rub = parseRub(String(baseRub));
+      if (isNaN(rub) || rub <= 0) return null;
+
+      if (0.01 <= rub && rub < 100.00) {
+        rub += 100;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (100.00 <= rub && rub < 500.00) {
+        rub += 200;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (500.00 <= rub && rub < 1000.00) {
+        rub += 300;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (1000.00 <= rub && rub < 2000.00) {
+        rub += 500;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (2000.00 <= rub && rub < 3000.00) {
+        rub += 600;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (3000.00 <= rub && rub < 4000.00) {
+        rub += 700;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (4000.00 <= rub && rub < 5000.00) {
+        rub += 800;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (5000.00 <= rub && rub < 6000.00) {
+        rub += 900;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (6000.00 <= rub && rub < 7000.00) {
+        rub += 1000;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (7000.00 <= rub && rub < 8000.00) {
+        rub += 1100;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (8000.00 <= rub && rub < 9000.00) {
+        rub += 1200;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else if (9000.00 <= rub && rub < 10000.00) {
+        rub += 1300;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      } else {
+        // тот же подход, что в Python: base = 1200 + (int(rub/1000) - 8) * 100
+        const base = 1200 + (Math.floor(rub/1000) - 8) * 100;
+        rub += base;
+        rub = ceil10(rub);
+        rub *= 1.04;
+        rub += 300;
+        rub = ceil10(rub);
+      }
+
+      // возвращаем целое (в Python возвращался int)
+      return Math.trunc(rub);
+    }
+
+    function formatRub(n){
+      return n.toLocaleString('ru-RU') + '₽'; // пробелы в разрядах, без пробела перед ₽
+    }
+
+    function show(){
+      const input = document.getElementById('price').value;
+      const result = calculatePrice(input);
+      const el = document.getElementById('result');
+      el.textContent = (result === null) ? 'Введите корректное число' : `Итоговая цена: ${formatRub(result)}`;
+    }
+
+    // Кнопка
+    document.getElementById('calcBtn').addEventListener('click', show);
+    // Поддержка Enter и мгновенный пересчёт (в Safari/iOS тоже сработает)
+    const inputEl = document.getElementById('price');
+    inputEl.addEventListener('keyup', (e)=>{ if(e.key==='Enter') show(); });
+    inputEl.addEventListener('change', show);
+    inputEl.addEventListener('input', ()=>{ /* опционально можно автопересчёт */ });
+  </script>
+</body>
+</html>
